@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFIGRAPH TECHNOLOGIES // SYSTEM OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: rgba(12, 12, 12, 0.88);
+            --fg-main: #e5e5e5;
+            --fg-dim: #737373;
+            --border-color: #333333;
+            --border-bright: #ffffff;
+            --accent-glow: rgba(255, 255, 255, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            min-height: 100vh;
+            background-color: var(--bg-dark);
+            color: var(--fg-main);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Matrix Background Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+
+        /* CRT Scanline Overlay */
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.35) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        /* Top OS Taskbar */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 38px;
+            background: #000000;
+            border-bottom: 1px solid var(--border-bright);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 100;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .os-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: var(--border-bright);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ffffff;
+            display: inline-block;
+            box-shadow: 0 0 8px #ffffff;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        .top-bar-right {
+            display: flex;
+            gap: 20px;
+            color: var(--fg-dim);
+        }
+
+        .top-bar-right span {
+            color: var(--fg-main);
+        }
+
+        /* Main Desktop Workspace */
+        .desktop-workspace {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 60px auto 40px auto;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        /* Terminal Window Styling */
+        .window {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(4px);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .window:hover {
+            border-color: var(--border-bright);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .window-header {
+            background: #141414;
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--fg-dim);
+        }
+
+        .window:hover .window-header {
+            background: #1f1f1f;
+            color: var(--fg-main);
+            border-bottom-color: var(--border-bright);
+        }
+
+        .window-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .win-btn {
+            width: 10px;
+            height: 10px;
+            border: 1px solid var(--fg-dim);
+            display: inline-block;
+        }
+
+        .window-body {
+            padding: 24px;
+        }
+
+        /* Hero Terminal */
+        .hero-glitch {
+            font-family: 'VT323', monospace;
+            font-size: clamp(2.2rem, 6vw, 4.2rem);
+            line-height: 1;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .subtitle {
+            color: var(--fg-dim);
+            font-size: 1rem;
+            margin-bottom: 24px;
+            border-left: 2px solid #ffffff;
+            padding-left: 12px;
+        }
+
+        .terminal-output {
+            background: #000000;
+            border: 1px solid #222;
+            padding: 16px;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            color: #cccccc;
+        }
+
+        .prompt-line {
+            margin-bottom: 6px;
+        }
+
+        .prompt-user {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 9px;
+            height: 16px;
+            background: #ffffff;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+
+        /* Grid Layout for Sub-Windows */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* Services / Modules */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .module-card {
+            border: 1px solid #262626;
+            background: #080808;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .module-card:hover {
+            border-color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .module-id {
+            font-size: 0.75rem;
+            color: var(--fg-dim);
+            margin-bottom: 6px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 6px;
+        }
+
+        .module-desc {
+            font-size: 0.85rem;
+            color: #a3a3a3;
+        }
+
+        /* Interactive Command Line */
+        .cli-input-wrap {
+            display: flex;
+            align-items: center;
+            background: #000;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            margin-top: 12px;
+        }
+
+        .cli-prefix {
+            color: #ffffff;
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        #cli-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.95rem;
+            width: 100%;
+            outline: none;
+        }
+
+        /* Contact Section & Buttons */
+        .contact-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .contact-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #1f1f1f;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .contact-label {
+            font-size: 0.75rem;
+            color: var(--fg-dim);
+        }
+
+        .contact-val {
+            font-size: 1.05rem;
+            color: #ffffff;
+            word-break: break-all;
+            user-select: text;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .cyber-btn {
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            padding: 10px 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cyber-btn:hover {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        /* System Metrics */
+        .metric-row {
+            margin-bottom: 14px;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #141414;
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ffffff;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: var(--fg-dim);
+            border-top: 1px solid #1a1a1a;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (max-width: 600px) {
+            .top-bar-right .hide-mobile {
+                display: none;
+            }
+            .window-body {
+                padding: 16px;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            .cyber-btn {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Matrix Rain -->
+    <canvas id="bg-canvas"></canvas>
+    <!-- CRT Monitor Lines -->
+    <div class="crt-overlay"></div>
+
+    <!-- Top Desktop Bar -->
+    <header class="top-bar">
+        <div class="os-brand">
+            <span class="status-dot"></span>
+            <span>INFIGRAPH_OS v4.2</span>
+        </div>
+        <div class="top-bar-right">
+            <div class="hide-mobile">STATUS: <span>ONLINE</span></div>
+            <div class="hide-mobile">ENC: <span>SHA-256</span></div>
+            <div id="sys-clock">00:00:00</div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="desktop-workspace">
+
+        <!-- Main Terminal Window -->
+        <section class="window">
+            <div class="window-header">
+                <div class="window-title">
+                    <span>[root@infigraph-tech:~#]</span>
+                </div>
+                <div class="window-controls">
+                    <span class="win-btn"></span>
+                    <span class="win-btn"></span>
+                    <span class="win-btn" style="background:#fff;"></span>
+                </div>
+            </div>
+            <div class="window-body">
+                <h1 class="hero-glitch">INFIGRAPH TECHNOLOGIES</h1>
+                <p class="subtitle">NEXT-GEN DIGITAL INFRASTRUCTURE, SOFTWARE ARCHITECTURE & IT SOLUTIONS</p>
+
+                <div class="terminal-output" id="terminal-log">
+                    <div class="prompt-line"><span class="prompt-user">system@infigraph:~$</span> ./init_company_profile.sh</div>
+                    <div class="prompt-line">> Loading core modules... [OK]</div>
+                    <div class="prompt-line">> Establishing secure monochrome interface... [OK]</div>
+                    <div class="prompt-line">> Welcome to INFIGRAPH TECHNOLOGIES. Type <b>help</b> below to interact.</div>
+                </div>
+
+                <!-- Interactive Terminal Input -->
+                <div class="cli-input-wrap">
+                    <span class="cli-prefix">guest@infigraph:~$</span>
+                    <input type="text" id="cli-input" placeholder="Type 'help', 'services', 'contact', or 'clear' and press Enter..." autocomplete="off">
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Window -->
+        <section class="window">
+            <div class="window-header">
+                <div class="window-title">
+                    <span>/usr/bin/capabilities.exe</span>
+                </div>
+                <div class="window-controls">
+                    <span class="win-btn"></span>
+                    <span class="win-btn"></span>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="module-grid">
+                    <div class="module-card">
+                        <div class="module-id">MOD_01 // WEB & APP</div>
+                        <div class="module-title">Full-Stack Development</div>
+                        <div class="module-desc">High-performance web applications, custom portals, and scalable responsive interfaces built for speed.</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-id">MOD_02 // AUTOMATION</div>
+                        <div class="module-title">Data & Workflow Automation</div>
+                        <div class="module-desc">Custom scripts, dataset processing, automated pipelines, and smart business intelligence systems.</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-id">MOD_03 // CLOUD & IT</div>
+                        <div class="module-title">IT Infrastructure & Ops</div>
+                        <div class="module-desc">End-to-end technical asset management, cloud deployment, system security, and enterprise consulting.</div>
+                    </div>
+                    <div class="module-card">
+                        <div class="module-id">MOD_04 // DESIGN</div>
+                        <div class="module-title">UI/UX & Digital Branding</div>
+                        <div class="module-desc">Modern, precision-engineered user experiences and digital catalogs tailored to your brand identity.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom 2-Column Grid: Contact & System Diagnostics -->
+        <div class="grid-2col">
+            <!-- Contact Comms Window -->
+            <section class="window">
+                <div class="window-header">
+                    <div class="window-title">
+                        <span>/etc/network/communications.cfg</span>
+                    </div>
+                    <div class="window-controls">
+                        <span class="win-btn"></span>
+                    </div>
+                </div>
+                <div class="window-body">
+                    <ul class="contact-list">
+                        <li>
+                            <span class="contact-label">ORGANIZATION IDENTIFIER</span>
+                            <span class="contact-val">INFIGRAPH TECHNOLOGIES</span>
+                        </li>
+                        <li>
+                            <span class="contact-label">DIRECT ELECTRONIC MAIL</span>
+                            <span class="contact-val">infigraphtechnologies@gmail.com</span>
+                        </li>
+                        <li>
+                            <span class="contact-label">SECURE VOICE / WHATSAPP COMMS</span>
+                            <span class="contact-val">+91 9734297297</span>
+                        </li>
+                    </ul>
+                    <div class="btn-group">
+                        <a href="mailto:infigraphtechnologies@gmail.com" class="cyber-btn">
+                            [ SEND_EMAIL ]
+                        </a>
+                        <a href="tel:+919734297297" class="cyber-btn">
+                            [ INITIATE_CALL ]
+                        </a>
+                        <a href="https://wa.me/919734297297" target="_blank" class="cyber-btn">
+                            [ WHATSAPP_PING ]
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Diagnostics Window -->
+            <section class="window">
+                <div class="window-header">
+                    <div class="window-title">
+                        <span>/var/log/sys_telemetry.mon</span>
+                    </div>
+                    <div class="window-controls">
+                        <span class="win-btn"></span>
+                    </div>
+                </div>
+                <div class="window-body">
+                    <div class="metric-row">
+                        <div class="metric-header">
+                            <span>SYSTEM RELIABILITY & UPTIME</span>
+                            <span>99.98%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 99%;"></div></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-header">
+                            <span>CODE EFFICIENCY INDEX</span>
+                            <span>96.4%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 96%;"></div></div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-header">
+                            <span>SECURITY PROTOCOL ENFORCEMENT</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+                    </div>
+                    <div style="margin-top: 20px; font-size: 0.8rem; color: var(--fg-dim); border-top: 1px dashed #333; padding-top: 12px;">
+                        > STATUS: ALL NODES OPERATIONAL<br>
+                        > READY FOR NEW CLIENT DEPLOYMENTS_<span class="cursor"></span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <footer>
+        &copy; <span id="year"></span> INFIGRAPH TECHNOLOGIES. ALL RIGHTS RESERVED. // TERMINAL SESSION ACTIVE
+    </footer>
+
+    <script>
+        // 1. Live Clock & Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('sys-clock').textContent = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 2. Monochrome Matrix Background Rain
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const chars = '01INFIGRAPHTECH/_#[]<>\\|';
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = fontSize + 'px "Share Tech Mono"';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 45);
+
+        // 3. Interactive CLI Terminal
+        const cliInput = document.getElementById('cli-input');
+        const terminalLog = document.getElementById('terminal-log');
+
+        cliInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim().toLowerCase();
+                if (!cmd) return;
+
+                const userLine = document.createElement('div');
+                userLine.className = 'prompt-line';
+                userLine.innerHTML = `<span class="prompt-user">guest@infigraph:~$</span> ${this.value}`;
+                terminalLog.appendChild(userLine);
+
+                const responseLine = document.createElement('div');
+                responseLine.className = 'prompt-line';
+                responseLine.style.color = '#ffffff';
+
+                if (cmd === 'help') {
+                    responseLine.innerHTML = `> Available commands: <b>services</b>, <b>contact</b>, <b>about</b>, <b>clear</b>`;
+                } else if (cmd === 'services') {
+                    responseLine.innerHTML = `> [1] Full-Stack Web/App Dev | [2] Data & Workflow Automation | [3] IT Infrastructure | [4] UI/UX Branding`;
+                } else if (cmd === 'contact') {
+                    responseLine.innerHTML = `> MAIL: infigraphtechnologies@gmail.com | PHONE: +91 9734297297`;
+                } else if (cmd === 'about') {
+                    responseLine.innerHTML = `> INFIGRAPH TECHNOLOGIES delivers precision-engineered software and IT operations.`;
+                } else if (cmd === 'clear') {
+                    terminalLog.innerHTML = '';
+                    this.value = '';
+                    return;
+                } else {
+                    responseLine.innerHTML = `> Command not recognized: '${cmd}'. Type <b>help</b> for a list of commands.`;
+                }
+
+                terminalLog.appendChild(responseLine);
+                this.value = '';
+                terminalLog.scrollTop = terminalLog.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
