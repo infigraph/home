@@ -3,43 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INFIGRAPH TECHNOLOGIES // CYBER OS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <title>INFIGRAPH TECHNOLOGIES | Digital Engineering & IT Solutions</title>
+    <!-- Elegant, high-legibility modern fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #070913;
-            --bg-panel: #101528;
-            --bg-card: #161d36;
-            --fg-white: #ffffff;
-            --fg-main: #f1f5f9;
-            --fg-secondary: #cbd5e1;
-            --fg-muted: #94a3b8;
-            --accent-1: #00f2fe;
-            --accent-2: #a855f7;
-            --accent-3: #ec4899;
-            --accent-green: #10b981;
-            --border-color: #263159;
-        }
-
-        body.theme-matrix {
-            --accent-1: #10b981;
-            --accent-2: #06b6d4;
-            --accent-3: #84cc16;
-            --border-color: #14532d;
-        }
-
-        body.theme-sunset {
-            --accent-1: #ff5e7e;
-            --accent-2: #ff9900;
-            --accent-3: #eab308;
-            --border-color: #5b2133;
-        }
-
-        body.theme-gold {
-            --accent-1: #fbbf24;
-            --accent-2: #38bdf8;
-            --accent-3: #f59e0b;
-            --border-color: #574115;
+            --bg-main: #090d16;
+            --bg-secondary: #111827;
+            --bg-card: #161f33;
+            --bg-card-hover: #1e2942;
+            --text-white: #ffffff;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent-cyan: #06b6d4;
+            --accent-indigo: #6366f1;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --accent-emerald: #10b981;
+            --border-subtle: #26334d;
         }
 
         * {
@@ -48,799 +29,184 @@
             padding: 0;
         }
 
-        html, body {
-            width: 100%;
-            min-height: 100vh;
-            background-color: #070913;
-            background-color: var(--bg-dark);
-            color: #f1f5f9;
-            color: var(--fg-main);
-            font-family: 'Inter', Arial, sans-serif;
-            overflow-x: hidden;
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.65;
+            overflow-x: hidden;
             font-size: 16px;
         }
 
-        /* Particle Canvas */
-        #bg-canvas {
+        /* Elegant Ambient Mesh Background */
+        .bg-glow-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
+            overflow: hidden;
             pointer-events: none;
         }
 
-        /* Top OS Taskbar */
-        .top-bar {
+        .glow-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(110px);
+            opacity: 0.22;
+            animation: floatBlob 14s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            background: var(--accent-indigo);
+            top: -100px;
+            left: -100px;
+        }
+
+        .blob-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-cyan);
+            top: 30%;
+            right: -120px;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            width: 420px;
+            height: 420px;
+            background: var(--accent-pink);
+            bottom: -120px;
+            left: 20%;
+            animation-delay: -9s;
+        }
+
+        @keyframes floatBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 50px) scale(1.12); }
+        }
+
+        /* Navigation Bar */
+        header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 50px;
-            background-color: #04060d;
-            border-bottom: 2px solid var(--accent-1);
+            background-color: rgba(9, 13, 22, 0.92);
+            border-bottom: 1px solid var(--border-subtle);
+            z-index: 1000;
+            padding: 14px 24px;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
-            z-index: 100;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
 
-        .os-brand {
+        .brand-logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 10px #10b981;
-        }
-
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: var(--fg-secondary);
-        }
-
-        .theme-btn {
-            background-color: var(--accent-1);
-            color: #05070f;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        .theme-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Main Desktop Workspace */
-        .desktop-workspace {
-            position: relative;
-            z-index: 10;
-            max-width: 1160px;
-            margin: 74px auto 40px auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 26px;
-        }
-
-        /* Terminal Window Styling */
-        .window {
-            background-color: #101528;
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
-            overflow: hidden;
-        }
-
-        .window:hover {
-            border-color: var(--accent-1);
-        }
-
-        .window-header {
-            background-color: #090c18;
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--accent-1);
-        }
-
-        .window-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .win-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .dot-red { background-color: #ff5f56; }
-        .dot-yellow { background-color: #ffbd2e; }
-        .dot-green { background-color: #27c93f; }
-
-        .window-body {
-            padding: 26px;
-        }
-
-        /* Hero Text */
-        .hero-badge {
-            display: inline-block;
-            background-color: #16243d;
-            border: 1px solid var(--accent-1);
-            color: var(--accent-1);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-        }
-
-        .hero-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: clamp(1.8rem, 4.5vw, 3.1rem);
-            font-weight: 800;
-            line-height: 1.2;
-            color: #ffffff;
-            text-shadow: 0 0 18px rgba(0, 242, 254, 0.35);
-            margin-bottom: 10px;
-        }
-
-        .hero-title span {
-            color: var(--accent-1);
-        }
-
-        .subtitle {
-            color: var(--fg-secondary);
-            font-size: 1.05rem;
-            font-weight: 500;
-            margin-bottom: 22px;
-            border-left: 4px solid var(--accent-2);
-            padding-left: 14px;
-        }
-
-        /* Terminal Log Area */
-        .terminal-output {
-            background-color: #060811;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.92rem;
-            line-height: 1.7;
-            margin-bottom: 16px;
-            color: #f1f5f9;
-            max-height: 240px;
-            overflow-y: auto;
-        }
-
-        .prompt-line {
-            margin-bottom: 8px;
-        }
-
-        .prompt-user {
-            color: var(--accent-1);
-            font-weight: 700;
-        }
-
-        .tag-ok {
-            color: #10b981;
-            font-weight: 700;
-        }
-
-        /* Quick Command Pills */
-        .quick-cmds {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 14px;
-            align-items: center;
-        }
-
-        .quick-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--fg-muted);
-        }
-
-        .cmd-chip {
-            background-color: #1b2442;
-            border: 1px solid var(--accent-1);
-            color: #ffffff;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .cmd-chip:hover {
-            background-color: var(--accent-1);
-            color: #05070f;
-        }
-
-        /* Interactive Command Line */
-        .cli-input-wrap {
-            display: flex;
-            align-items: center;
-            background-color: #04060c;
-            border: 2px solid var(--accent-1);
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .cli-prefix {
-            color: var(--accent-2);
-            font-weight: 700;
-            margin-right: 12px;
-            white-space: nowrap;
-            font-size: 0.95rem;
-        }
-
-        #cli-input {
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
-            width: 100%;
-            outline: none;
-        }
-
-        /* Services / Modules Grid */
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 18px;
-        }
-
-        .module-card {
-            border: 1px solid var(--border-color);
-            border-top: 3px solid var(--accent-1);
-            background-color: #161d36;
-            background-color: var(--bg-card);
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .module-id {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--accent-1);
-            margin-bottom: 6px;
-        }
-
-        .module-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-
-        .module-desc {
-            font-size: 0.95rem;
-            color: var(--fg-secondary);
-            line-height: 1.6;
-        }
-
-        /* Bottom 2-Column Grid */
-        .grid-2col {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 26px;
-        }
-
-        /* Contact Section & Buttons */
-        .contact-list {
-            list-style: none;
-            margin-bottom: 22px;
-        }
-
-        .contact-list li {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .contact-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--accent-1);
-        }
-
-        .contact-val {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #ffffff;
-            word-break: break-all;
-        }
-
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
             gap: 12px;
+            text-decoration: none;
+            color: var(--text-white);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
         }
 
-        .cyber-btn {
-            background-color: var(--accent-1);
-            color: #05070f;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 18px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.88rem;
-            font-weight: 800;
-            text-decoration: none;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: inline-flex;
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo), var(--accent-pink));
+            display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .cyber-btn.whatsapp {
-            background-color: #10b981;
+            font-weight: 800;
+            font-size: 1.1rem;
             color: #ffffff;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         }
 
-        .cyber-btn.call {
-            background-color: #1e293b;
-            color: #ffffff;
-            border: 1px solid var(--accent-1);
-        }
-
-        /* System Metrics */
-        .metric-row {
-            margin-bottom: 18px;
-        }
-
-        .metric-header {
+        .nav-links {
             display: flex;
-            justify-content: space-between;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 6px;
+            gap: 28px;
+            align-items: center;
         }
 
-        .metric-val {
-            color: var(--accent-1);
-            font-weight: 700;
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 12px;
-            background-color: #060811;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            overflow: hidden;
+        .nav-links a:hover {
+            color: var(--accent-cyan);
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-            border-radius: 10px;
+        .nav-cta {
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            color: #ffffff !important;
+            padding: 9px 20px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
         }
 
-        .status-footer-box {
-            margin-top: 22px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.88rem;
-            color: var(--fg-secondary);
-            border-top: 1px dashed var(--border-color);
-            padding-top: 14px;
-            line-height: 1.8;
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
         }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 24px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--fg-secondary);
-            border-top: 1px solid var(--border-color);
+        /* Main Wrapper */
+        .main-wrapper {
             position: relative;
             z-index: 10;
-            background-color: #04060d;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 110px 24px 60px 24px;
         }
 
-        @media (max-width: 650px) {
-            .top-bar-right .hide-mobile {
-                display: none;
-            }
-            .window-body {
-                padding: 18px;
-            }
-            .btn-group {
-                flex-direction: column;
-            }
-            .cyber-btn {
-                width: 100%;
-            }
-            .cli-input-wrap {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 6px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <canvas id="bg-canvas"></canvas>
-
-    <!-- Top Desktop Bar -->
-    <header class="top-bar">
-        <div class="os-brand">
-            <span class="status-dot"></span>
-            <span>INFIGRAPH_OS v5.2</span>
-        </div>
-        <div class="top-bar-right">
-            <button class="theme-btn" id="theme-switcher" onclick="cycleTheme()">THEME: CYBER</button>
-            <div class="hide-mobile">STATUS: <span style="color:#10b981;font-weight:700;">ONLINE</span></div>
-            <div id="sys-clock">12:00:00</div>
-        </div>
-    </header>
-
-    <!-- Main Workspace -->
-    <main class="desktop-workspace">
-
-        <!-- Main Terminal Window -->
-        <section class="window">
-            <div class="window-header">
-                <div>[root@infigraph-tech:~#] — interactive-terminal</div>
-                <div class="window-controls">
-                    <span class="win-dot dot-red"></span>
-                    <span class="win-dot dot-yellow"></span>
-                    <span class="win-dot dot-green"></span>
-                </div>
-            </div>
-            <div class="window-body">
-                <div class="hero-badge">SYSTEM ONLINE // INDIA</div>
-                <h1 class="hero-title">INFIGRAPH <span>TECHNOLOGIES</span></h1>
-                <p class="subtitle">Next-Gen Digital Infrastructure, Software Architecture &amp; IT Solutions</p>
-
-                <div class="terminal-output" id="terminal-log">
-                    <div class="prompt-line"><span class="prompt-user">system@infigraph:~$</span> ./launch_cyber_os.sh</div>
-                    <div class="prompt-line">&gt; Initializing core modules &amp; graphics engine... <span class="tag-ok">[OK]</span></div>
-                    <div class="prompt-line">&gt; Establishing client communication channels... <span class="tag-ok">[SECURE]</span></div>
-                    <div class="prompt-line">&gt; Welcome to <strong>INFIGRAPH TECHNOLOGIES</strong>. Click a button below or type a command!</div>
-                </div>
-
-                <!-- 1-Click Command Pills -->
-                <div class="quick-cmds">
-                    <span class="quick-label">QUICK RUN:</span>
-                    <button class="cmd-chip" onclick="runCommand('services')">services</button>
-                    <button class="cmd-chip" onclick="runCommand('contact')">contact</button>
-                    <button class="cmd-chip" onclick="runCommand('about')">about</button>
-                    <button class="cmd-chip" onclick="runCommand('theme')">change color</button>
-                    <button class="cmd-chip" onclick="runCommand('clear')">clear</button>
-                </div>
-
-                <!-- Interactive Terminal Input -->
-                <div class="cli-input-wrap">
-                    <span class="cli-prefix">guest@infigraph:~$</span>
-                    <input type="text" id="cli-input" placeholder="Type 'help', 'services', 'contact', 'theme', or 'clear'..." autocomplete="off">
-                </div>
-            </div>
-        </section>
-
-        <!-- Services Window -->
-        <section class="window">
-            <div class="window-header">
-                <div>/usr/bin/capabilities.exe — Core Tech Stack</div>
-                <div class="window-controls">
-                    <span class="win-dot dot-red"></span>
-                    <span class="win-dot dot-yellow"></span>
-                    <span class="win-dot dot-green"></span>
-                </div>
-            </div>
-            <div class="window-body">
-                <div class="module-grid">
-                    <div class="module-card">
-                        <div class="module-id">MOD_01 // WEB &amp; APPS</div>
-                        <div class="module-title">Full-Stack Development</div>
-                        <div class="module-desc">High-performance web applications, custom enterprise portals, and dynamic responsive interfaces engineered for speed.</div>
-                    </div>
-                    <div class="module-card">
-                        <div class="module-id">MOD_02 // AUTOMATION</div>
-                        <div class="module-title">Data &amp; Workflow Automation</div>
-                        <div class="module-desc">Custom Python &amp; cloud scripts, automated dataset processing, smart spreadsheets, and business intelligence pipelines.</div>
-                    </div>
-                    <div class="module-card">
-                        <div class="module-id">MOD_03 // CLOUD &amp; IT</div>
-                        <div class="module-title">IT Infrastructure &amp; Ops</div>
-                        <div class="module-desc">End-to-end technical administration, cloud deployment, system security, and dedicated enterprise IT consulting.</div>
-                    </div>
-                    <div class="module-card">
-                        <div class="module-id">MOD_04 // DIGITAL UI</div>
-                        <div class="module-title">UI/UX &amp; Digital Catalogs</div>
-                        <div class="module-desc">Modern, interactive brand experiences, custom web widgets, and automated digital catalogs for growing businesses.</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Bottom 2-Column Grid: Contact & System Diagnostics -->
-        <div class="grid-2col">
-            <!-- Contact Comms Window -->
-            <section class="window">
-                <div class="window-header">
-                    <div>/etc/network/comms.cfg — Direct Connect</div>
-                    <div class="window-controls">
-                        <span class="win-dot dot-red"></span>
-                        <span class="win-dot dot-yellow"></span>
-                        <span class="win-dot dot-green"></span>
-                    </div>
-                </div>
-                <div class="window-body">
-                    <ul class="contact-list">
-                        <li>
-                            <span class="contact-label">ORGANIZATION</span>
-                            <span class="contact-val">INFIGRAPH TECHNOLOGIES</span>
-                        </li>
-                        <li>
-                            <span class="contact-label">OFFICIAL EMAIL</span>
-                            <span class="contact-val">infigraphtechnologies@gmail.com</span>
-                        </li>
-                        <li>
-                            <span class="contact-label">DIRECT PHONE &amp; WHATSAPP</span>
-                            <span class="contact-val">+91 9734297297</span>
-                        </li>
-                    </ul>
-                    <div class="btn-group">
-                        <a href="mailto:infigraphtechnologies@gmail.com" class="cyber-btn">
-                            SEND EMAIL
-                        </a>
-                        <a href="https://wa.me/919734297297" target="_blank" class="cyber-btn whatsapp">
-                            WHATSAPP CHAT
-                        </a>
-                        <a href="tel:+919734297297" class="cyber-btn call">
-                            CALL NOW
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- System Diagnostics Window -->
-            <section class="window">
-                <div class="window-header">
-                    <div>/var/log/telemetry.mon — Live System Status</div>
-                    <div class="window-controls">
-                        <span class="win-dot dot-red"></span>
-                        <span class="win-dot dot-yellow"></span>
-                        <span class="win-dot dot-green"></span>
-                    </div>
-                </div>
-                <div class="window-body">
-                    <div class="metric-row">
-                        <div class="metric-header">
-                            <span>SERVER UPTIME &amp; RELIABILITY</span>
-                            <span class="metric-val">99.98%</span>
-                        </div>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 99%;"></div></div>
-                    </div>
-                    <div class="metric-row">
-                        <div class="metric-header">
-                            <span>REAL-TIME ENGINE EFFICIENCY</span>
-                            <span class="metric-val" id="cpu-val">96.4%</span>
-                        </div>
-                        <div class="progress-bar"><div class="progress-fill" id="cpu-bar" style="width: 96%;"></div></div>
-                    </div>
-                    <div class="metric-row">
-                        <div class="metric-header">
-                            <span>DATA SECURITY ENCRYPTION</span>
-                            <span class="metric-val">100% [SHA-256]</span>
-                        </div>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
-                    </div>
-                    <div class="status-footer-box">
-                        &gt; STATUS: <strong style="color:#10b981;">ALL CLUSTERS ACTIVE</strong><br>
-                        &gt; READY FOR NEW CLIENT DEPLOYMENTS
-                    </div>
-                </div>
-            </section>
-        </div>
-
-    </main>
-
-    <footer>
-        &copy; <span id="year">2026</span> <strong>INFIGRAPH TECHNOLOGIES</strong>. ALL RIGHTS RESERVED.
-    </footer>
-
-    <script>
-        // Multi-Theme Switcher
-        var themes = [
-            { cls: '', name: 'CYBER', color: '#00f2fe' },
-            { cls: 'theme-matrix', name: 'MATRIX', color: '#10b981' },
-            { cls: 'theme-sunset', name: 'SUNSET', color: '#ff5e7e' },
-            { cls: 'theme-gold', name: 'GOLD', color: '#fbbf24' }
-        ];
-        var currentThemeIdx = 0;
-
-        function cycleTheme() {
-            currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-            document.body.className = themes[currentThemeIdx].cls;
-            var btn = document.getElementById('theme-switcher');
-            if (btn) btn.textContent = 'THEME: ' + themes[currentThemeIdx].name;
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 50px 0 70px 0;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        // Interactive Terminal Commands
-        function runCommand(rawVal) {
-            var terminalLog = document.getElementById('terminal-log');
-            if (!terminalLog || !rawVal) return;
-            var cmd = rawVal.trim().toLowerCase();
-            if (!cmd) return;
-
-            if (cmd === 'clear') {
-                terminalLog.innerHTML = '';
-                return;
-            }
-
-            var userLine = document.createElement('div');
-            userLine.className = 'prompt-line';
-            userLine.innerHTML = '<span class="prompt-user">guest@infigraph:~$</span> ' + rawVal;
-            terminalLog.appendChild(userLine);
-
-            var responseLine = document.createElement('div');
-            responseLine.className = 'prompt-line';
-            responseLine.style.color = '#00f2fe';
-
-            if (cmd === 'help') {
-                responseLine.innerHTML = '&gt; Commands: <strong>services</strong>, <strong>contact</strong>, <strong>about</strong>, <strong>theme</strong>, <strong>clear</strong>';
-            } else if (cmd === 'services') {
-                responseLine.innerHTML = '&gt; [1] Full-Stack Web/App Dev | [2] Python &amp; Data Automation | [3] Cloud &amp; IT Ops | [4] UI/UX &amp; Digital Catalogs';
-            } else if (cmd === 'contact') {
-                responseLine.innerHTML = '&gt; EMAIL: infigraphtechnologies@gmail.com | PHONE: +91 9734297297';
-            } else if (cmd === 'about') {
-                responseLine.innerHTML = '&gt; INFIGRAPH TECHNOLOGIES builds high-speed web portals, automation tools, and scalable IT systems.';
-            } else if (cmd === 'theme') {
-                cycleTheme();
-                responseLine.innerHTML = '&gt; Color theme switched to <strong>' + themes[currentThemeIdx].name + '</strong>!';
-            } else {
-                responseLine.innerHTML = '&gt; Unknown command: "' + rawVal + '". Type <strong>help</strong> or click a quick button.';
-            }
-
-            terminalLog.appendChild(responseLine);
-            terminalLog.scrollTop = terminalLog.scrollHeight;
+        .pill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--accent-cyan);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 24px;
         }
 
-        // Initialize Page Safely
-        window.onload = function() {
-            // 1. Clock & Year
-            var yr = document.getElementById('year');
-            if (yr) yr.textContent = new Date().getFullYear();
-
-            setInterval(function() {
-                var clk = document.getElementById('sys-clock');
-                if (clk) clk.textContent = new Date().toTimeString().split(' ')[0];
-            }, 1000);
-
-            // 2. Dynamic CPU Metric
-            setInterval(function() {
-                var val = (94 + Math.random() * 5.5).toFixed(1);
-                var cVal = document.getElementById('cpu-val');
-                var cBar = document.getElementById('cpu-bar');
-                if (cVal) cVal.textContent = val + '%';
-                if (cBar) cBar.style.width = val + '%';
-            }, 2500);
-
-            // 3. Enter key for CLI input
-            var cliInput = document.getElementById('cli-input');
-            if (cliInput) {
-                cliInput.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        runCommand(this.value);
-                        this.value = '';
-                    }
-                });
-            }
-
-            // 4. Safe Canvas Particle Background
-            try {
-                var canvas = document.getElementById('bg-canvas');
-                var ctx = canvas.getContext('2d');
-                var particles = [];
-
-                function resizeCanvas() {
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
-                    particles = [];
-                    var count = Math.min(Math.floor((canvas.width * canvas.height) / 16000), 70);
-                    var palette = ['#00f2fe', '#a855f7', '#ec4899', '#10b981'];
-                    for (var i = 0; i < count; i++) {
-                        particles.push({
-                            x: Math.random() * canvas.width,
-                            y: Math.random() * canvas.height,
-                            vx: (Math.random() - 0.5) * 0.8,
-                            vy: (Math.random() - 0.5) * 0.8,
-                            size: Math.random() * 2 + 1,
-                            color: palette[i % palette.length]
-                        });
-                    }
-                }
-
-                function animateParticles() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    var activeColor = themes[currentThemeIdx].color;
-
-                    for (var i = 0; i < particles.length; i++) {
-                        var p = particles[i];
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        ctx.fillStyle = p.color;
-                        ctx.fill();
-
-                        for (var j = i + 1; j < particles.length; j++) {
-                            var p2 = particles[j];
-                            var dx = p.x - p2.x;
-                            var dy = p.y - p2.y;
-                            var dist = Math.sqrt(dx * dx + dy * dy);
-                            if (dist < 120) {
-                                ctx.beginPath();
-                                ctx.strokeStyle = activeColor;
-                                ctx.globalAlpha = (1 - dist / 120) * 0.22;
-                                ctx.lineWidth = 1;
-                                ctx.moveTo(p.x, p.y);
-                                ctx.lineTo(p2.x, p2.y);
-                                ctx.stroke();
-                                ctx.globalAlpha = 1;
-                            }
-                        }
-                    }
-                    requestAnimationFrame(animateParticles);
-                }
-
-                window.addEventListener('resize', resizeCanvas);
-                resizeCanvas();
-                animateParticles();
-            } catch (err) {
-                console.log('Canvas animation skipped:', err);
-            }
-        };
-    </script>
-</body>
-</html>
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-emerald);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--accent-emerald);
